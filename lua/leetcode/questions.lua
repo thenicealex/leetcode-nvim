@@ -1,5 +1,5 @@
 local M = {}
-M.difficulty = nil
+local utils = require("leetcode.utils")
 local pickers = require("telescope.pickers")
 local finders = require("telescope.finders")
 -- local themes = require("telescope.themes")
@@ -7,6 +7,7 @@ local conf = require("telescope.config").values
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 
+M.difficulty = nil
 local function is_staus(value)
 	if value:find("√") then
 		return "ac"
@@ -46,14 +47,13 @@ local function is_title(value)
 	return res
 end
 
-
 local function filter_problems()
 	local problems
 	if M.difficulty == "EASY" then
 		problems = vim.fn.systemlist("leetcode list -q e")
-  elseif M.difficulty == "MEDIUM" then
+	elseif M.difficulty == "MEDIUM" then
 		problems = vim.fn.systemlist("leetcode list -q m")
-  elseif M.difficulty == "HARD" then
+	elseif M.difficulty == "HARD" then
 		problems = vim.fn.systemlist("leetcode list -q h")
 	else
 		problems = vim.fn.systemlist("leetcode list")
@@ -160,7 +160,8 @@ local function select_problem(prompt_bufnr)
 	actions.close(prompt_bufnr)
 	local problem = action_state.get_selected_entry()
 	local que_title = problem["value"]["title"]
-	local output = vim.fn.systemlist("leetcode show -gx " .. que_title .. " -l cpp -o C:/Users/liran/.leetcode/")
+	local que_path = vim.loop.os_homedir()
+	local output = vim.fn.systemlist("leetcode show -gx " .. que_title .. " -l cpp -o " .. que_path .. "/.leetcode/")
 	if output == nil then
 		return
 	end
@@ -176,6 +177,7 @@ local function select_problem(prompt_bufnr)
 end
 
 function M.tele_list()
+	utils.check()
 	local que_list = function(opts)
 		opts = opts or {}
 		pickers

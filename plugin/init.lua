@@ -16,6 +16,9 @@ vim.api.nvim_create_user_command("LeetcodeTest", function ()
   require('leetcode.runner').test()
 end, {})
 
+-- vim.api.nvim_create_user_command("LeetcodeDisplay", function ()
+--   require('leetcode.display').dispay()
+-- end, {})
 
 vim.api.nvim_create_user_command("LeetcodeSubmit", function ()
   require('leetcode.runner').submit()
