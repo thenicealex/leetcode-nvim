@@ -1,35 +1,50 @@
 local M = {}
-local runner = require("leetcode.runner")
 
-local Popup = require("nui.popup")
-local event = require("nui.utils.autocmd").event
+M.context = { "hello world" }
 
-function M.dispay()
-	local file_path = vim.fn.expand("%:p")
-	local popup = Popup({
-		enter = false,
-		focusable = false,
-		border = {
-			style = "rounded",
-		},
-		position = "50%",
-		size = {
-			width = "80%",
-			height = "60%",
-		},
+function M.create_window()
+	local opts = {
+		relative = "editor",
+		width = 40,
+		height = 20,
+		border = "rounded",
+		row = math.floor(vim.o.lines * 0.1),
+		col = math.floor(vim.o.columns) - math.floor(40),
+		style = "minimal",
+	}
+
+	local bufnr = vim.api.nvim_create_buf(false, false)
+	vim.bo[bufnr].bufhidden = "wipe"
+	vim.bo[bufnr].buftype = "nofile"
+	local winid = vim.api.nvim_open_win(bufnr, true, opts)
+
+	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, M.context)
+	-- vim.bo[bufnr].modifiable = false
+
+	vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "", {
+		noremap = true,
+		nowait = true,
+		callback = function()
+			vim.api.nvim_win_close(winid, true)
+		end,
 	})
+	return {winid = winid, bufnr = bufnr}
+end
 
-	-- mount/open the component
-	popup:mount()
+function M.toggle()
+	if M.winid and vim.api.nvim_win_is_valid(M.winid) then
+		vim.api.nvim_win_close(M.winid, true)
+		M.winid = nil
+		return
+	end
+	M.winid= M.create_window().winid
+end
 
-	-- unmount component when cursor leaves buffer
-	popup:on(event.BufLeave, function()
-		popup:unmount()
-	end)
-	vim.api.nvim_buf_set_lines(popup.bufnr, 0, 1, false, { "Testing" })
-	local context = runner.test(file_path)
-	vim.api.nvim_buf_set_lines(popup.bufnr, 1, -1, false, context)
-
+function M.set_context(context)
+	if context == nil then
+		return
+	end
+	M.context = context
 end
 
 return M

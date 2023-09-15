@@ -48,16 +48,7 @@ local function is_title(value)
 end
 
 local function filter_problems()
-	local problems
-	if M.difficulty == "EASY" then
-		problems = vim.fn.systemlist("leetcode list -q e")
-	elseif M.difficulty == "MEDIUM" then
-		problems = vim.fn.systemlist("leetcode list -q m")
-	elseif M.difficulty == "HARD" then
-		problems = vim.fn.systemlist("leetcode list -q h")
-	else
-		problems = vim.fn.systemlist("leetcode list")
-	end
+	local problems = vim.fn.systemlist("leetcode list")
 	if problems == nil then
 		return { result = {}, result_tab = { { "nil", "nil", "nil", "nil", "nil" } } }
 	end
@@ -191,18 +182,6 @@ function M.tele_list()
 				sorter = conf.generic_sorter(opts),
 				attach_mappings = function(_, map)
 					map({ "n", "i" }, "<CR>", select_problem)
-					map({ "n", "i" }, "<A-e>", function()
-						M.difficulty = "EASY"
-						M.tele_list()
-					end)
-					map({ "n", "i" }, "<A-m>", function()
-						M.difficulty = "MEDIUM"
-						M.tele_list()
-					end)
-					map({ "n", "i" }, "<A-h>", function()
-						M.difficulty = "HARD"
-						M.tele_list()
-					end)
 					return true
 				end,
 			})
