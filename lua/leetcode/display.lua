@@ -5,7 +5,7 @@ M.context = { "hello world" }
 function M.create_window()
 	local opts = {
 		relative = "editor",
-		width = 40,
+		width = math.floor(vim.o.columns * 0.5),
 		height = 20,
 		border = "rounded",
 		row = math.floor(vim.o.lines * 0.1),
