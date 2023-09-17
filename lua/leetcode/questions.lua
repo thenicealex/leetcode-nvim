@@ -28,6 +28,11 @@ local function is_difficulty(value)
 	end
 end
 
+
+local function is_id(value)
+  return value:match("%[(.-)%]"):match("%d+")
+end
+
 local function is_title(value)
 	local c
 	if value:find("Easy") then
@@ -58,7 +63,10 @@ local function filter_problems()
 		if value:find("Warning") or value:find("warning") then
 			goto continue
 		end
-		local id = value:match("%[(.-)%]")
+    if value:match("%[(.-)%]"):find("LC") then
+			goto continue
+    end
+		local id = is_id(value)
 		local paid = value:find("%$") ~= nil and 1 or 0
 		local status = is_staus(value)
 		local title = is_title(value)
@@ -150,9 +158,9 @@ end
 local function select_problem(prompt_bufnr)
 	actions.close(prompt_bufnr)
 	local problem = action_state.get_selected_entry()
-	local que_title = problem["value"]["title"]
+	local que_id = problem["value"]["id"]
 	local que_path = vim.loop.os_homedir()
-	local output = vim.fn.systemlist("leetcode show -gx " .. que_title .. " -l cpp -o " .. que_path .. "/.leetcode/")
+	local output = vim.fn.systemlist("leetcode show -gx " .. que_id .. " -l cpp -o " .. que_path .. "/.leetcode/")
 	if output == nil then
 		return
 	end
