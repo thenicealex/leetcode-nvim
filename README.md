@@ -45,9 +45,9 @@ You can install `leetcode-nvim` with lazy.nvim
 ### Default config
 ```lua
 {
-	domin = "cn",
-	language = "cpp",
-	directory = "~/.leetcode",
+  domin = "cn",
+  language = "cpp",
+  directory = "~/.leetcode",
 }
 ```
 
