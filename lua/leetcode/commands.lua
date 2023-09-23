@@ -1,5 +1,6 @@
 local M = {}
 local display = require("leetcode.display")
+local que = require("leetcode.questions")
 
 function M.test()
 	local file_path = vim.fn.expand("%:p")
@@ -46,6 +47,17 @@ function M.submit()
 			-- end
 		end,
 	})
+end
+
+function M.list_all()
+	local question_all = que.filter_problems().result_str
+	vim.cmd("vsplit")
+	local win = vim.api.nvim_get_current_win()
+	local buf = vim.api.nvim_create_buf(true, true)
+	vim.api.nvim_win_set_buf(win, buf)
+	for _, value in pairs(question_all) do
+		vim.api.nvim_buf_set_lines(buf, -1, -1, true, { value })
+	end
 end
 
 return M

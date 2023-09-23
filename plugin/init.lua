@@ -4,22 +4,22 @@ end
 
 vim.g.loaded_leetcode_nvim = 1
 
-vim.api.nvim_create_user_command("LeetcodeList", function ()
-  require('leetcode.questions').tele_list()
+vim.api.nvim_create_user_command("LCList", function ()
+  require('leetcode.telescope').telescope_list_all()
 end, {})
 
--- vim.api.nvim_create_user_command("LeetcodeSubmit", function ()
---   require('leetcode.runner').submit()
--- end, {})
-
-vim.api.nvim_create_user_command("LeetcodeTest", function ()
-  require('leetcode.runner').test()
+vim.api.nvim_create_user_command("LCTest", function ()
+  require('leetcode.commands').test()
 end, {})
 
-vim.api.nvim_create_user_command("LeetcodeDisplay", function ()
+vim.api.nvim_create_user_command("LCSubmit", function ()
+  require('leetcode.commands').submit()
+end, {})
+
+vim.api.nvim_create_user_command("LCDisplay", function ()
   require('leetcode.display').toggle()
 end, {})
 
-vim.api.nvim_create_user_command("LeetcodeSubmit", function ()
-  require('leetcode.runner').submit()
-end, {})
+-- vim.api.nvim_create_user_command("LCTEST", function ()
+--   require('leetcode.questions').test()
+-- end, {})

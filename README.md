@@ -35,7 +35,9 @@ You can install `leetcode-nvim` with lazy.nvim
 ```lua
 {
   "thenicealex/leetcode-nvim",
+  cmd = { "LCList", "LCTest", "LCSubmit", "LCDisplay" },
   opts = {},
+  dependencies = {"nvim-telescope/telescope.nvim"}
   config = function (_, opts)
     require("leetcode").set(opts)
   end
@@ -54,9 +56,9 @@ You can install `leetcode-nvim` with lazy.nvim
 ## Commands
 
 ```vim
-:LeetcodeList     -- To list all questions
-:LeetcodeTest     -- To test question
-:LeetcodeSubmit   -- To submit question
+:LCList     -- To list all questions
+:LCTest     -- To test question
+:LCSubmit   -- To submit question
 ```
 
 #### Welcome to submit Issues and PR

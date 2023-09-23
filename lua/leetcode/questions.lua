@@ -1,13 +1,9 @@
 local M = {}
-local utils = require("leetcode.utils")
-local pickers = require("telescope.pickers")
-local finders = require("telescope.finders")
--- local themes = require("telescope.themes")
-local conf = require("telescope.config").values
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
 
-M.difficulty = nil
+local function is_id(value)
+	return value:match("%[(.-)%]"):match("%d+")
+end
+
 local function is_staus(value)
 	if value:find("√") then
 		return "ac"
@@ -26,11 +22,6 @@ local function is_difficulty(value)
 	else
 		return "Hard"
 	end
-end
-
-
-local function is_id(value)
-  return value:match("%[(.-)%]"):match("%d+")
 end
 
 local function is_title(value)
@@ -52,7 +43,7 @@ local function is_title(value)
 	return res
 end
 
-local function filter_problems()
+function M.filter_problems()
 	local problems = vim.fn.systemlist("leetcode list")
 	if problems == nil then
 		return { result = {}, result_tab = { { "nil", "nil", "nil", "nil", "nil" } } }
@@ -76,127 +67,6 @@ local function filter_problems()
 		::continue::
 	end
 	return { result = result, result_tab = result_tab }
-end
-
-function M.list()
-	local question_all = filter_problems().result_str
-	vim.cmd("vsplit")
-	local win = vim.api.nvim_get_current_win()
-	local buf = vim.api.nvim_create_buf(true, true)
-	vim.api.nvim_win_set_buf(win, buf)
-	for _, value in pairs(question_all) do
-		vim.api.nvim_buf_set_lines(buf, -1, -1, true, { value })
-	end
-end
-
-local function update_status(entry)
-	local statuses = {
-		ac = "🚩",
-		notac = "❌",
-		AC = "🚩",
-		TRIED = "❌",
-	}
-	local sts = entry.value.status
-	if sts == "ac" then
-		return statuses.ac
-	elseif sts == "tried" then
-		return statuses.TRIED
-	else
-		return " "
-	end
-end
-
-local function update_paid(entry)
-	local paid = entry.value.paid
-	if paid == 1 then
-		return "👑"
-	else
-		return " "
-	end
-end
-
-local function gen_from_questions()
-	local entry_display = require("telescope.pickers.entry_display")
-	local make_entry = require("telescope.make_entry")
-	local displayer = entry_display.create({
-		separator = "",
-		items = {
-			{ width = 10 },
-			{ width = 4 },
-			{ width = 4 },
-			{ width = 45 },
-			{ width = 8 },
-		},
-	})
-
-	local make_display = function(entry)
-		return displayer({
-			{ entry.value.id, "Number" },
-			{ update_paid(entry), "Number" },
-			{ update_status(entry), "Number" },
-			{ entry.value.title, "Title" },
-			{ entry.value.difficulty, "Number" },
-		})
-	end
-
-	return function(o)
-		local entry = {
-			display = make_display,
-			value = {
-				id = o.id,
-				paid = o.paid,
-				status = o.status,
-				title = o.title,
-				difficulty = o.difficulty,
-			},
-			ordinal = string.format("%s %s%s %s %s", o.id, o.paid, o.status, o.title, o.difficulty),
-		}
-		return make_entry.set_default_entry_mt(entry, {})
-	end
-end
-
-local function select_problem(prompt_bufnr)
-	actions.close(prompt_bufnr)
-	local problem = action_state.get_selected_entry()
-	local que_id = problem["value"]["id"]
-	local que_path = vim.loop.os_homedir()
-	local output = vim.fn.systemlist("leetcode show -gx " .. que_id .. " -l cpp -o " .. que_path .. "/.leetcode/")
-	if output == nil then
-		return
-	end
-	local file_name
-	for _, value in pairs(output) do
-		if value:match("Source Code:") then
-			file_name = value
-		end
-	end
-	file_name = file_name:match("Source Code:%s+(.+)")
-	print(file_name)
-	vim.api.nvim_command("edit " .. file_name)
-end
-
-function M.tele_list()
-	utils.check()
-	local que_list = function(opts)
-		opts = opts or {}
-		pickers
-			.new(opts, {
-				prompt_title = "Problems",
-				finder = finders.new_table({
-					results = filter_problems().result_tab,
-					entry_maker = gen_from_questions(),
-				}),
-				previewer = false,
-				sorter = conf.generic_sorter(opts),
-				attach_mappings = function(_, map)
-					map({ "n", "i" }, "<CR>", select_problem)
-					return true
-				end,
-			})
-			:find()
-	end
-
-	que_list()
 end
 
 return M
