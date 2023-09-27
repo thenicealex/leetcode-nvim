@@ -1,4 +1,6 @@
 local M = {}
+local cfg = require("leetcode.config").config
+local status = cfg.icons
 
 local que = require("leetcode.questions")
 local utils = require("leetcode.utils")
@@ -10,17 +12,12 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 
 local function update_status(entry)
-	local statuses = {
-		ac = "🚩",
-		notac = "❌",
-		AC = "🚩",
-		TRIED = "❌",
-	}
 	local sts = entry.value.status
 	if sts == "ac" then
-		return statuses.ac
+		-- return statuses.ac
+		return status.aced
 	elseif sts == "tried" then
-		return statuses.TRIED
+		return status.tried
 	else
 		return " "
 	end
@@ -29,7 +26,7 @@ end
 local function update_paid(entry)
 	local paid = entry.value.paid
 	if paid == 1 then
-		return "👑"
+		return status.paid
 	else
 		return " "
 	end
@@ -80,7 +77,7 @@ local function select_problem(prompt_bufnr)
 	local problem = action_state.get_selected_entry()
 	local que_id = problem["value"]["id"]
 	local que_path = vim.loop.os_homedir()
-	local output = vim.fn.systemlist("leetcode show -gx " .. que_id .. " -l cpp -o " .. que_path .. "/.leetcode/")
+	local output = vim.fn.systemlist("leetcode show -gx " .. que_id .. " -l ".. cfg.language .." -o " .. que_path .. cfg.directory)
 	if output == nil then
 		return
 	end
