@@ -15,7 +15,7 @@ function M.create_window()
 
 	local bufnr = vim.api.nvim_create_buf(false, false)
 	vim.bo[bufnr].bufhidden = "wipe"
-	vim.bo[bufnr].buftype = "lcresult"
+	vim.bo[bufnr].buftype = "nofile"
 	local winid = vim.api.nvim_open_win(bufnr, true, opts)
 
 	vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, M.context)

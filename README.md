@@ -4,19 +4,25 @@
 
 Sovling leetcode question in neovim, based on leetcode-cli
 
-# Shows
+# Showcase
 
-## List Questions
+> The showcase update is not timely
+
+<details><summary> <b>Images (Click to expand!)</b></summary>
+
+<h2> List Questions </h2>
 
 ![List questions](./assets/list.gif?raw=true)
 
-## Test Question
+<h2> Test Question </h2>
 
 ![Test question](./assets/test.gif?raw=true)
 
-## Submit Question
+<h2> Submit Question </h2>
 
 ![Submit question](./assets/submit.gif?raw=true)
+
+</details>
 
 # Quickstart
 
@@ -35,7 +41,7 @@ You can install `leetcode-nvim` with lazy.nvim
 ```lua
 {
   "thenicealex/leetcode-nvim",
-  cmd = { "LCList", "LCTest", "LCSubmit", "LCDisplay" },
+  cmd = {"LCode"},
   opts = {},
   dependencies = {"nvim-telescope/telescope.nvim"}
   config = function (_, opts)
@@ -56,9 +62,9 @@ You can install `leetcode-nvim` with lazy.nvim
 ## Commands
 
 ```vim
-:LCList     -- To list all questions
-:LCTest     -- To test question
-:LCSubmit   -- To submit question
+:LCode list     -- To list all questions
+:LCode test     -- To test question
+:LCode submit   -- To submit question
 ```
 
 #### Welcome to submit Issues and PR

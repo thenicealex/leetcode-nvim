@@ -97,14 +97,15 @@ end
 
 function M.telescope_list_all()
 	utils.check()
-  local res = que.filter_problems().result_tab
 	local list_all = function(opts)
 		opts = opts or {}
 		pickers
 			.new(opts, {
 				prompt_title = "Problems",
-				finder = finders.new_table({
-					results = res,
+				finder = finders.new_dynamic({
+					fn = function()
+            return que.filter_problems().result_tab
+          end,
 					entry_maker = gen_from_questions(),
 				}),
 				previewer = false,
